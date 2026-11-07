@@ -69,9 +69,10 @@ export default function Projects() {
       <div className="w-full relative z-10">
         <CoverflowCarousel
           slides={PROJECTS}
-          cardWidth={isMobile ? "clamp(140px, 42vw, 190px)" : "clamp(170px, 17vw, 250px)"}
+          cardWidth={isMobile ? "clamp(190px, 58vw, 230px)" : "clamp(170px, 17vw, 250px)"}
           cardRatio={16 / 9}
-          gap={0.08}
+          gap={isMobile ? 0.12 : 0.08}
+          rotate={isMobile ? 30 : 45}
           fade={0.07}
           onActivate={(slide) => {
             const url = slide.repoUrl || slide.appUrl || slide.designUrl || slide.liveUrl || slide.href;

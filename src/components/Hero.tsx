@@ -91,10 +91,10 @@ export default function Hero({ particleEngine, setParticleEngine }: HeroProps) {
       imageSrc: '/pfp.jpeg',
       maxParticles,
       spacing,
-      cursorRadius: isMobile ? 40 : 80,
+      cursorRadius: isMobile ? 65 : 80,
       springStiffness: 0.08,
       damping: 0.85,
-      repulsionForce: 6,
+      repulsionForce: isMobile ? 8 : 6,
       onReady: () => {
         engine.start();
       },
@@ -147,6 +147,9 @@ export default function Hero({ particleEngine, setParticleEngine }: HeroProps) {
     const onPointerMove = (e: PointerEvent) => {
       engineRef.current?.start();
       engineRef.current?.setCursor(e.clientX, e.clientY);
+      if (e.pointerType === 'touch' || e.buttons > 0) {
+        engineRef.current?.setHolding(true, e.clientX, e.clientY);
+      }
     };
 
     const onPointerLeave = () => {
@@ -155,15 +158,26 @@ export default function Hero({ particleEngine, setParticleEngine }: HeroProps) {
     };
 
     const onPointerDown = (e: PointerEvent) => {
+      try {
+        (e.currentTarget as HTMLElement)?.setPointerCapture?.(e.pointerId);
+      } catch {}
       engineRef.current?.start();
       engineRef.current?.setHolding(true, e.clientX, e.clientY);
+      engineRef.current?.setCursor(e.clientX, e.clientY);
     };
 
-    const onPointerUp = () => {
+    const onPointerUp = (e: PointerEvent) => {
+      try {
+        (e.currentTarget as HTMLElement)?.releasePointerCapture?.(e.pointerId);
+      } catch {}
+      engineRef.current?.clearCursor();
       engineRef.current?.setHolding(false);
     };
 
-    const onPointerCancel = () => {
+    const onPointerCancel = (e: PointerEvent) => {
+      try {
+        (e.currentTarget as HTMLElement)?.releasePointerCapture?.(e.pointerId);
+      } catch {}
       engineRef.current?.clearCursor();
       engineRef.current?.setHolding(false);
     };
@@ -368,7 +382,7 @@ export default function Hero({ particleEngine, setParticleEngine }: HeroProps) {
           <div
             ref={portraitContainerRef}
             className="relative w-full max-w-[420px] aspect-[4/5] rounded-[28px] overflow-hidden border border-[var(--line)] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.55)] cursor-crosshair select-none"
-            style={{ touchAction: 'pan-y' }}
+            style={{ touchAction: 'none' }}
           >
             {reducedMotion ? (
               <img
@@ -382,6 +396,7 @@ export default function Hero({ particleEngine, setParticleEngine }: HeroProps) {
                 ref={canvasRef}
                 className="w-full h-full object-cover block relative z-10"
                 style={{
+                  touchAction: 'none',
                   opacity: canvasReady ? 1 : 0,
                   transition: 'opacity 400ms cubic-bezier(0.16, 1, 0.3, 1)',
                   pointerEvents: 'auto',

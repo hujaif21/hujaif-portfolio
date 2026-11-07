@@ -307,8 +307,13 @@ export function CoverflowCarousel({
     const measure = () => {
       const card = cardRefs.current.find(Boolean);
       if (card) {
-        widthRef.current = card.getBoundingClientRect().width;
-        paint();
+        // Use offsetWidth which returns the un-transformed CSS layout width!
+        // getBoundingClientRect().width returns the 3D-rotated projection which crushes cards.
+        const layoutWidth = card.offsetWidth;
+        if (layoutWidth > 0) {
+          widthRef.current = layoutWidth;
+          paint();
+        }
       }
     };
     measure();
