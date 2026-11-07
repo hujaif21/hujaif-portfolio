@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>404 — Page Not Found | Hujaif Belim</title>
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#2A0A12" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #2A0A12;
+        color: #F4EEE3;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1.5rem;
+        text-align: center;
+      }
+      .label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #BFB2A2;
+        margin-bottom: 1rem;
+      }
+      h1 {
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-size: clamp(3rem, 8vw, 5.5rem);
+        font-weight: 400;
+        line-height: 1;
+        margin-bottom: 1rem;
+        color: #F4EEE3;
+      }
+      p {
+        font-size: 1.0625rem;
+        color: #CFC5B8;
+        max-width: 440px;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        height: 48px;
+        padding: 0 1.75rem;
+        border-radius: 9999px;
+        background-color: #FF5A1F;
+        color: #FFFFFF;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+      }
+      .btn:hover {
+        background-color: #E64E17;
+        transform: translateY(-1px);
+      }
+      .btn:focus-visible {
+        outline: 2px solid #FF5A1F;
+        outline-offset: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <span class="label">404 / NOT FOUND</span>
+    <h1>Page not found.</h1>
+    <p>The screen or route you are looking for does not exist, has moved, or was refactored.</p>
+    <a href="/" class="btn">
+      <span>Return home</span>
+      <span aria-hidden="true">&rarr;</span>
+    </a>
+  </body>
+</html>

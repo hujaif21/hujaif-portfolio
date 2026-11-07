@@ -1,0 +1,22 @@
+{
+  "name": "Hujaif Belim — Flutter Developer",
+  "short_name": "Hujaif",
+  "description": "Flutter developer and IMCA student in Ahmedabad building cross-platform mobile apps with Dart, FastAPI and Gemini.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#2A0A12",
+  "theme_color": "#2A0A12",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
+

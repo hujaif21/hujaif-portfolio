@@ -1,0 +1,596 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN SYSTEM — Hujaif Belim Portfolio (Dark Maroon / Navy / Black)
+   --bg-maroon: #2A0A12 (deep oxblood maroon, main background)
+   --bg-maroon-lift: #3A101B (lighter maroon for glows and gradients)
+   --bg-black: #0A0A0C
+   --bg-navy: #0B1226
+   --surface: rgba(255, 255, 255, 0.05)
+   --surface-strong: rgba(255, 255, 255, 0.08)
+   --line: rgba(244, 238, 227, 0.12)
+   --text: #F4EEE3
+   --text-muted: #CFC5B8
+   --text-faint: #BFB2A2
+   --ember: #FF5A1F
+   ============================================================ */
+
+@theme {
+  --color-bg-maroon: #2A0A12;
+  --color-bg-maroon-lift: #3A101B;
+  --color-bg-black: #0A0A0C;
+  --color-bg-navy: #0B1226;
+  --color-surface: rgba(255, 255, 255, 0.05);
+  --color-surface-strong: rgba(255, 255, 255, 0.08);
+  --color-line: rgba(244, 238, 227, 0.12);
+  --color-border: rgba(244, 238, 227, 0.12);
+  --color-border-hover: rgba(255, 90, 31, 0.45);
+  --color-text: #F4EEE3;
+  --color-text-muted: #CFC5B8;
+  --color-text-faint: #BFB2A2;
+  --color-ember: #FF5A1F;
+  --color-ember-deep: #D9420A;
+  --color-foreground: #F4EEE3;
+  --color-background: #2A0A12;
+  --color-ring: #FF5A1F;
+
+  /* Legacy mappings mapped safely to dark theme */
+  --color-cream: #2A0A12;
+  --color-ink: #F4EEE3;
+  --color-muted: #CFC5B8;
+  --color-muted-foreground: #CFC5B8;
+  --color-mono: #BFB2A2;
+  --color-maroon: #BFB2A2;
+  --color-gold: rgba(244, 238, 227, 0.12);
+
+  --bg-maroon: #2A0A12;
+  --bg-maroon-lift: #3A101B;
+  --bg-black: #0A0A0C;
+  --bg-navy: #0B1226;
+  --surface: rgba(255, 255, 255, 0.05);
+  --surface-strong: rgba(255, 255, 255, 0.08);
+  --line: rgba(244, 238, 227, 0.12);
+  --text: #F4EEE3;
+  --text-muted: #CFC5B8;
+  --text-faint: #BFB2A2;
+  --ember: #FF5A1F;
+
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+:root {
+  color-scheme: dark;
+  --bg-maroon: #2A0A12;
+  --bg-maroon-lift: #3A101B;
+  --bg-black: #0A0A0C;
+  --bg-navy: #0B1226;
+  --surface: rgba(255, 255, 255, 0.05);
+  --surface-strong: rgba(255, 255, 255, 0.08);
+  --line: rgba(244, 238, 227, 0.12);
+  --text: #F4EEE3;
+  --text-muted: #CFC5B8;
+  --text-faint: #BFB2A2;
+  --ember: #FF5A1F;
+
+  /* Legacy alias pointers */
+  --color-cream: #2A0A12;
+  --color-surface: rgba(255, 255, 255, 0.05);
+  --color-ink: #F4EEE3;
+  --color-muted: #CFC5B8;
+  --color-muted-foreground: #CFC5B8;
+  --color-background: #2A0A12;
+  --color-foreground: #F4EEE3;
+  --color-ring: #FF5A1F;
+  --color-mono: #BFB2A2;
+  --color-ember: #FF5A1F;
+  --color-ember-deep: #D9420A;
+  --color-border: rgba(244, 238, 227, 0.12);
+  --color-border-hover: rgba(255, 90, 31, 0.45);
+  --maroon: #BFB2A2;
+  --gold: rgba(244, 238, 227, 0.12);
+  --gold-line: rgba(244, 238, 227, 0.12);
+
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  section[id] {
+    scroll-margin-top: 120px;
+  }
+
+  html {
+    background-color: var(--bg-maroon);
+    color: var(--text);
+    color-scheme: dark;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: auto;
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--bg-maroon);
+    color: var(--text);
+    cursor: none;
+    overflow-x: clip;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (pointer: coarse), (hover: none) {
+    body, * {
+      cursor: auto !important;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ember) !important;
+    outline-offset: 2px !important;
+  }
+}
+
+/* ---- Selection: ember background with dark maroon text ---- */
+::selection {
+  background-color: #FF5A1F;
+  color: #1A0509;
+}
+
+/* ---- Focus states ---- */
+:focus-visible {
+  outline: 2px solid var(--ember);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---- Slim scrollbar ---- */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(244, 238, 227, 0.25) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(244, 238, 227, 0.25);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 238, 227, 0.45);
+}
+
+/* ---- Typography scale ---- */
+.heading-xl {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  font-weight: 400;
+}
+
+.heading-lg {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  font-weight: 400;
+}
+
+.heading-md {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  font-weight: 400;
+}
+
+.body-lg {
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.body-sm {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.gold-diamond {
+  display: none !important;
+}
+
+.italic-accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--ember);
+}
+
+/* ---- 3% Noise overlay (white at 3% with soft-light) ---- */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.03;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* ============================================================
+   SOFT SEAMS & SECTION TRANSITIONS
+   ============================================================ */
+/* Hairline only between the two maroon sections (Hero -> Work) */
+.seam-maroon-hairline {
+  position: relative;
+}
+.seam-maroon-hairline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--line);
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Seam: Work (Maroon) to Projects (Black) */
+.seam-to-black {
+  position: relative;
+}
+.seam-to-black::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 160px;
+  background: linear-gradient(180deg, #34101A 0%, #0A0A0C 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Seam: Projects (Black) to Skills (Navy) — Handled seamlessly by Projects gradient ending at #0B1226 */
+.seam-to-navy {
+  position: relative;
+}
+.seam-to-navy::before {
+  display: none;
+}
+
+/* Seam: Skills (Navy) to About (Maroon) — passes through #0A0A0C at 50% */
+.seam-navy-to-maroon {
+  position: relative;
+}
+.seam-navy-to-maroon::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 160px;
+  background: linear-gradient(180deg, #0B1226 0%, #0A0A0C 50%, #2A0A12 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Seam: About (Maroon) to Contact (Black to Maroon) */
+.seam-to-contact {
+  position: relative;
+}
+.seam-to-contact::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 160px;
+  background: linear-gradient(180deg, #34101A 0%, #0A0A0C 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================================
+   CARDS, PANELS, CHIPS & BUTTONS (DARK THEME)
+   ============================================================ */
+.surface-card,
+.card-dark,
+.card-gold-hover {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: none !important;
+  transition: border-color 300ms ease, background-color 300ms ease;
+}
+
+.surface-card:hover,
+.surface-card:focus-within,
+.card-dark:hover,
+.card-dark:focus-within,
+.card-gold-hover:hover,
+.card-gold-hover:focus-within {
+  border-color: rgba(255, 90, 31, 0.45) !important;
+}
+
+.status-chip {
+  color: var(--text-faint) !important;
+  background-color: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: none !important;
+}
+
+/* Outline buttons */
+.btn-outline,
+.magnetic-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid rgba(244, 238, 227, 0.28);
+  border-radius: 100px;
+  cursor: none;
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  will-change: transform;
+}
+
+.btn-outline:hover,
+.magnetic-btn:hover {
+  border-color: rgba(244, 238, 227, 0.45);
+  background-color: var(--surface-strong);
+  color: var(--text);
+}
+
+/* Primary buttons: stay ember orange */
+.btn-primary,
+.magnetic-btn--primary {
+  background-color: var(--ember) !important;
+  border-color: var(--ember) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-primary:hover,
+.magnetic-btn--primary:hover {
+  background-color: #E64E17 !important;
+  border-color: #E64E17 !important;
+  color: #FFFFFF !important;
+}
+
+/* ---- Floating Navigation Bar ---- */
+.nav-bar {
+  position: fixed;
+  top: calc(1.25rem + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.625rem;
+  background: rgba(20, 6, 10, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  box-shadow: none;
+  max-width: calc(100vw - 32px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+
+.nav-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-bar--hidden {
+  transform: translateX(-50%) translateY(-140%);
+  opacity: 0;
+}
+
+.nav-link {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 0.5rem 0.75rem;
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  scroll-snap-align: center;
+  white-space: nowrap;
+}
+
+.nav-link:hover,
+.nav-link--active {
+  color: var(--text);
+}
+
+.nav-link--active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: var(--ember);
+}
+
+.nav-kbd {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  color: var(--text-faint);
+  padding: 0.125rem 0.375rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ---- Command palette ---- */
+[cmdk-root] {
+  max-width: 520px;
+  width: 100%;
+  background: #14060A;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+}
+
+[cmdk-input] {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  outline: none;
+}
+
+[cmdk-input]::placeholder {
+  color: var(--text-muted);
+}
+
+[cmdk-list] {
+  max-height: 320px;
+  overflow: auto;
+  padding: 0.5rem;
+}
+
+[cmdk-item] {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+[cmdk-item][data-selected="true"] {
+  background-color: var(--surface-strong);
+  color: var(--text);
+}
+
+[cmdk-group-heading] {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 0.5rem 0.75rem 0.25rem;
+  opacity: 0.85;
+}
+
+[cmdk-empty] {
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* ---- Loader ---- */
+.loader-container {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.loader-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.skip-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 101;
+  pointer-events: auto;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: rgba(20, 6, 10, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.skip-button:hover {
+  color: var(--text);
+  border-color: rgba(255, 90, 31, 0.45);
+  background-color: var(--surface-strong);
+}
