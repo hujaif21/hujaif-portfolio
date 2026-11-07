@@ -25,9 +25,9 @@ export default function VideoModal({
   const rawUrl = currentVideoUrl || videoUrl || '';
   const videoId = extractVideoId(rawUrl);
 
-  // Use youtube-nocookie with strict-origin-when-cross-origin to avoid ERR_CONNECTION_CLOSED
+  // Standard embed URL for YouTube
   const embedUrl = videoId
-    ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0`
+    ? `https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0`
     : rawUrl;
 
   const directUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : rawUrl;
@@ -57,37 +57,36 @@ export default function VideoModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-label="Watch demo video"
     >
-      {/* Dark backdrop: rgba(10,10,12,0.8) with backdrop-blur-sm */}
+      {/* Dark backdrop: rgba(10,10,12,0.85) with backdrop-blur-sm */}
       <div
         onClick={onClose}
-        className="absolute inset-0 bg-[#0A0A0C]/80 backdrop-blur-sm cursor-pointer"
+        className="absolute inset-0 bg-[#0A0A0C]/85 backdrop-blur-sm cursor-pointer"
         aria-hidden="true"
       />
 
-      {/* Centered Modal Frame with Top-Right Close Button */}
-      <div className="relative z-10 w-full max-w-[min(90vw,calc(80vh*9/16))] flex flex-col items-center justify-center">
-        {/* "X" close button at top right */}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close demo video"
-          className="absolute -top-11 right-0 sm:-right-9 z-20 size-9 rounded-full bg-[#0A0A0C]/80 hover:bg-[#FF5A1F] text-white border border-white/10 flex items-center justify-center transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]"
-        >
-          <X size={18} />
-        </button>
+      {/* Prominent, highly visible close button on top right */}
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close demo video"
+        className="fixed sm:absolute top-4 right-4 z-[10000] size-11 rounded-full bg-black/85 hover:bg-[#FF5A1F] text-white border border-white/20 flex items-center justify-center transition-all cursor-pointer shadow-lg backdrop-blur-md outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]"
+      >
+        <X size={20} className="text-white" />
+      </button>
 
+      {/* Centered Modal Frame */}
+      <div className="relative z-10 w-full max-w-[min(90vw,calc(80vh*9/16))] flex flex-col items-center justify-center">
         {/* Conditional 9:16 responsive vertical iframe */}
         <iframe
           src={embedUrl}
           title="Project Demo Video"
           className="w-full aspect-[9/16] max-h-[75vh] sm:max-h-[80vh] rounded-xl border border-white/10 bg-black shadow-2xl"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
         />
 
@@ -110,3 +109,4 @@ export default function VideoModal({
     </div>
   );
 }
+

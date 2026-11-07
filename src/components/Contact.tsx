@@ -231,7 +231,7 @@ export default function Contact() {
             ============================================================ */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-start">
           {/* --------------------------------------------------------
-              LEFT: PRIMARY ACTION (Cols 1-7)
+              LEFT: WEB3FORMS CONTACT FORM (Cols 1-7)
               -------------------------------------------------------- */}
           <motion.div
             variants={staggerVariants}
@@ -242,61 +242,85 @@ export default function Contact() {
             custom={0}
             className="lg:col-span-7 flex flex-col gap-5"
           >
-            <div className="flex items-center gap-3 w-full">
-              {/* Large Magnetic Email Pill Button */}
-              <motion.a
-                href={mailtoHref}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-                style={{
-                  x: reducedMotion ? 0 : smoothX,
-                  y: reducedMotion ? 0 : smoothY,
-                }}
-                className="group relative flex-1 h-16 sm:h-[72px] px-6 sm:px-8 rounded-full bg-[#FF5A1F] hover:bg-[#D9420A] text-white flex items-center justify-between gap-3 transition-colors shadow-sm cursor-pointer select-none"
-              >
-                <span className="font-serif text-[19px] sm:text-[22px] tracking-tight truncate font-normal">
-                  hujaifbelim@gmail.com
-                </span>
-                <ArrowUpRight
-                  size={22}
-                  className="shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1 group-hover:-translate-y-1"
-                />
-              </motion.a>
+            <form
+              action="https://api.web3forms.com/submit"
+              method="POST"
+              className="flex flex-col gap-4 w-full"
+            >
+              <input type="hidden" name="access_key" value="214811cc-0fc8-4fcf-b3c2-9b1885490665" />
+              <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
 
-              {/* 72px Circular Outline Copy Button */}
-              <div className="relative shrink-0">
-                <button
-                  type="button"
-                  onClick={handleCopyEmail}
-                  aria-label="Copy email address"
-                  className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-full border border-[var(--line)] bg-[var(--surface)] hover:bg-[var(--surface-strong)] flex items-center justify-center transition-colors cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]"
+              <div>
+                <label
+                  htmlFor="contact-name"
+                  className="block font-mono text-xs uppercase tracking-wider text-[var(--text-faint)] mb-1.5"
                 >
-                  {copied ? (
-                    <Check size={22} className="text-[#FF5A1F] animate-in zoom-in-50 duration-200" />
-                  ) : (
-                    <Copy size={22} className="text-[var(--text)] transition-colors" />
-                  )}
-                </button>
-
-                {/* Animated "Copied" Pill Indicator */}
-                {copied && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 6, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.9 }}
-                    className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded bg-[var(--bg-black)] border border-[var(--line)] text-[var(--text)] text-[11px] font-mono shadow-md z-20"
-                    aria-live="polite"
-                  >
-                    Copied
-                  </motion.div>
-                )}
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  id="contact-name"
+                  name="name"
+                  required
+                  placeholder="Your name"
+                  className="w-full h-12 px-4 rounded-xl bg-[var(--surface)] border border-[var(--line)] text-[var(--text)] placeholder:text-[var(--text-faint)]/40 text-[16px] sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] transition-all"
+                />
               </div>
-            </div>
 
-            {/* Helper Note */}
-            <p className="font-mono text-xs text-[var(--text-faint)] select-none pl-1">
-              Usually the quickest way to start a conversation.
-            </p>
+              <div>
+                <label
+                  htmlFor="contact-email"
+                  className="block font-mono text-xs uppercase tracking-wider text-[var(--text-faint)] mb-1.5"
+                >
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  id="contact-email"
+                  name="email"
+                  required
+                  placeholder="you@example.com"
+                  className="w-full h-12 px-4 rounded-xl bg-[var(--surface)] border border-[var(--line)] text-[var(--text)] placeholder:text-[var(--text-faint)]/40 text-[16px] sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] transition-all"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="contact-message"
+                  className="block font-mono text-xs uppercase tracking-wider text-[var(--text-faint)] mb-1.5"
+                >
+                  Message *
+                </label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  required
+                  rows={4}
+                  placeholder="Tell me about your project, team, or opportunity..."
+                  className="w-full p-4 rounded-xl bg-[var(--surface)] border border-[var(--line)] text-[var(--text)] placeholder:text-[var(--text-faint)]/40 text-[16px] sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] transition-all resize-y min-h-[120px]"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="h-12 px-8 rounded-full bg-[#FF5A1F] hover:bg-[#D9420A] text-white font-medium text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] w-fit"
+              >
+                <span>Send message</span>
+                <ArrowUpRight size={18} />
+              </button>
+            </form>
+
+            <div className="flex items-center gap-2 pt-1">
+              <span className="font-mono text-xs text-[var(--text-faint)]">
+                Prefer direct email?
+              </span>
+              <a
+                href={mailtoHref}
+                className="font-mono text-xs text-[#FF5A1F] hover:underline"
+              >
+                hujaifbelim@gmail.com
+              </a>
+            </div>
           </motion.div>
 
           {/* --------------------------------------------------------

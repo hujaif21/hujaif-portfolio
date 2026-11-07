@@ -80,36 +80,46 @@ export default function Navbar({ onOpenCommandPalette }: NavbarProps) {
   if (!showNav) return null;
 
   return (
-    <motion.nav
-      className={`nav-bar ${isHidden ? 'nav-bar--hidden' : ''}`}
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
-      role="navigation"
-      aria-label="Main navigation"
-    >
-      {NAV_ITEMS.map((item) => (
-        <button
-          key={item.id}
-          className={`nav-link ${activeSection === item.id ? 'nav-link--active' : ''}`}
-          onClick={() => scrollToSection(item.id)}
-          data-cursor="View"
-          aria-current={activeSection === item.id ? 'page' : undefined}
-        >
-          {item.label}
-        </button>
-      ))}
-
-      {/* Command palette hint (hidden under 640px on mobile) */}
-      <button
-        className="nav-link hidden sm:inline-flex"
-        onClick={onOpenCommandPalette}
-        data-cursor="Search"
-        aria-label="Open command palette"
+    <div className="fixed top-3 sm:top-4 inset-x-0 z-50 flex justify-center pointer-events-none px-3">
+      <motion.nav
+        className="pointer-events-auto flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-1.5 rounded-full border border-[var(--line)] bg-[rgba(20,6,10,0.88)] backdrop-blur-md shadow-[0_10px_30px_-10px_rgba(0,0,0,0.7)] max-w-full overflow-x-auto scrollbar-none"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: isHidden ? 0 : 1, y: isHidden ? -40 : 0 }}
+        transition={{ duration: 0.35, ease: 'easeOut' }}
+        role="navigation"
+        aria-label="Main navigation"
       >
-        <span className="nav-kbd">Ctrl K</span>
-      </button>
-    </motion.nav>
+        {NAV_ITEMS.map((item) => (
+          <button
+            key={item.id}
+            className={`relative font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[var(--text-faint)] hover:text-[var(--text)] px-2.5 sm:px-3 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer shrink-0 whitespace-nowrap outline-none focus-visible:ring-1 focus-visible:ring-[#FF5A1F] rounded-full ${
+              activeSection === item.id ? 'text-[var(--text)] font-semibold' : ''
+            }`}
+            onClick={() => scrollToSection(item.id)}
+            data-cursor="View"
+            aria-current={activeSection === item.id ? 'page' : undefined}
+          >
+            {item.label}
+            {activeSection === item.id && (
+              <span
+                className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#FF5A1F]"
+                aria-hidden="true"
+              />
+            )}
+          </button>
+        ))}
+
+        {/* Command palette hint (hidden under 640px on mobile) */}
+        <button
+          className="hidden sm:inline-flex items-center justify-center px-2 py-1 min-h-[32px] rounded border border-[var(--line)] font-mono text-[10px] text-[var(--text-faint)] hover:text-[var(--text)] hover:border-[var(--line-strong)] transition-colors cursor-pointer shrink-0 ml-1"
+          onClick={onOpenCommandPalette}
+          data-cursor="Search"
+          aria-label="Open command palette"
+        >
+          <span>Ctrl K</span>
+        </button>
+      </motion.nav>
+    </div>
   );
 }
 

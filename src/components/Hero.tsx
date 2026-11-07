@@ -77,9 +77,8 @@ export default function Hero({ particleEngine, setParticleEngine }: HeroProps) {
 
     const canvas = canvasRef.current;
     const isMobile = window.innerWidth < 768;
-    const isLowPower = typeof navigator !== 'undefined' && typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 4;
-    const maxParticles = isMobile || isLowPower ? 3000 : 9000;
-    const spacing = isMobile || isLowPower ? 5 : 4;
+    const maxParticles = isMobile ? 6000 : 9000;
+    const spacing = 4;
 
     const rect = canvas.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -91,10 +90,10 @@ export default function Hero({ particleEngine, setParticleEngine }: HeroProps) {
       imageSrc: '/pfp.jpeg',
       maxParticles,
       spacing,
-      cursorRadius: isMobile ? 65 : 80,
+      cursorRadius: isMobile ? 70 : 85,
       springStiffness: 0.08,
       damping: 0.85,
-      repulsionForce: isMobile ? 8 : 6,
+      repulsionForce: isMobile ? 7 : 6,
       onReady: () => {
         engine.start();
       },
@@ -139,58 +138,89 @@ export default function Hero({ particleEngine, setParticleEngine }: HeroProps) {
     };
   }, [reducedMotion]);
 
-  // Passive pointer listeners attached directly to the portrait container
+  // Interactive pointer listeners attached directly to the portrait container
   useEffect(() => {
     const container = portraitContainerRef.current;
     if (!container || reducedMotion) return;
 
+    let holdTimeout: ReturnType<typeof setTimeout> | null = null;
+    let startX = 0;
+    let startY = 0;
+    let isDown = false;
+
+    const onPointerDown = (e: PointerEvent) => {
+      isDown = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      engineRef.current?.start();
+      engineRef.current?.setCursor(e.clientX, e.clientY);
+
+      // On press-and-hold (if held still for >320ms without dragging), reveal real photo
+      if (holdTimeout) clearTimeout(holdTimeout);
+      holdTimeout = setTimeout(() => {
+        if (isDown) {
+          engineRef.current?.setHolding(true, e.clientX, e.clientY);
+        }
+      }, 320);
+    };
+
     const onPointerMove = (e: PointerEvent) => {
       engineRef.current?.start();
       engineRef.current?.setCursor(e.clientX, e.clientY);
-      if (e.pointerType === 'touch' || e.buttons > 0) {
-        engineRef.current?.setHolding(true, e.clientX, e.clientY);
+
+      // If user drags (moves more than 6px), cancel photo reveal so they drag the pixels!
+      if (isDown) {
+        const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
+        if (dist > 6) {
+          if (holdTimeout) {
+            clearTimeout(holdTimeout);
+            holdTimeout = null;
+          }
+          engineRef.current?.setHolding(false);
+        }
       }
     };
 
+    const onPointerUp = () => {
+      isDown = false;
+      if (holdTimeout) {
+        clearTimeout(holdTimeout);
+        holdTimeout = null;
+      }
+      engineRef.current?.setHolding(false);
+      engineRef.current?.clearCursor();
+    };
+
+    const onPointerCancel = () => {
+      isDown = false;
+      if (holdTimeout) {
+        clearTimeout(holdTimeout);
+        holdTimeout = null;
+      }
+      engineRef.current?.setHolding(false);
+      engineRef.current?.clearCursor();
+    };
+
     const onPointerLeave = () => {
-      engineRef.current?.clearCursor();
+      isDown = false;
+      if (holdTimeout) {
+        clearTimeout(holdTimeout);
+        holdTimeout = null;
+      }
       engineRef.current?.setHolding(false);
-    };
-
-    const onPointerDown = (e: PointerEvent) => {
-      try {
-        (e.currentTarget as HTMLElement)?.setPointerCapture?.(e.pointerId);
-      } catch {}
-      engineRef.current?.start();
-      engineRef.current?.setHolding(true, e.clientX, e.clientY);
-      engineRef.current?.setCursor(e.clientX, e.clientY);
-    };
-
-    const onPointerUp = (e: PointerEvent) => {
-      try {
-        (e.currentTarget as HTMLElement)?.releasePointerCapture?.(e.pointerId);
-      } catch {}
       engineRef.current?.clearCursor();
-      engineRef.current?.setHolding(false);
     };
 
-    const onPointerCancel = (e: PointerEvent) => {
-      try {
-        (e.currentTarget as HTMLElement)?.releasePointerCapture?.(e.pointerId);
-      } catch {}
-      engineRef.current?.clearCursor();
-      engineRef.current?.setHolding(false);
-    };
-
-    container.addEventListener('pointermove', onPointerMove, { passive: true });
     container.addEventListener('pointerdown', onPointerDown, { passive: true });
+    container.addEventListener('pointermove', onPointerMove, { passive: true });
     container.addEventListener('pointerup', onPointerUp, { passive: true });
     container.addEventListener('pointercancel', onPointerCancel, { passive: true });
     container.addEventListener('pointerleave', onPointerLeave, { passive: true });
 
     return () => {
-      container.removeEventListener('pointermove', onPointerMove);
+      if (holdTimeout) clearTimeout(holdTimeout);
       container.removeEventListener('pointerdown', onPointerDown);
+      container.removeEventListener('pointermove', onPointerMove);
       container.removeEventListener('pointerup', onPointerUp);
       container.removeEventListener('pointercancel', onPointerCancel);
       container.removeEventListener('pointerleave', onPointerLeave);
@@ -222,18 +252,6 @@ export default function Hero({ particleEngine, setParticleEngine }: HeroProps) {
 
     observer.observe(sectionRef.current);
     return () => observer.disconnect();
-  }, []);
-
-  // Stream particles on scroll past hero
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      if (scrollY > 40 && scrollY < 900) {
-        engineRef.current?.streamOnScroll(scrollY - 40);
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Pause when tab is hidden, resume when tab is visible

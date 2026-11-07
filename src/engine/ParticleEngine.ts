@@ -203,49 +203,52 @@ export class ParticleEngine {
 
     // Sample on grid — filter out gray backdrop so ONLY the person is rendered
     const candidates: Particle[] = [];
-    const particleSize = spacing >= 4 ? 2.2 : 1.8;
+    const sampleStep = Math.max(3, Math.round(spacing));
+    const particleSize = sampleStep >= 4 ? 2.5 : 2.2;
 
-    for (let y = 0; y < sampleH; y += spacing) {
-      for (let x = 0; x < sampleW; x += spacing) {
-        const i = (y * sampleW + x) * 4;
+    for (let y = 0; y < sampleH; y += sampleStep) {
+      for (let x = 0; x < sampleW; x += sampleStep) {
+        const ix = Math.floor(x);
+        const iy = Math.floor(y);
+        const i = (iy * sampleW + ix) * 4;
         const r = data[i];
         const g = data[i + 1];
         const b = data[i + 2];
         const a = data[i + 3];
 
-        if (a < 100) continue;
+        if (a === undefined || a < 100 || isNaN(r) || isNaN(g) || isNaN(b)) continue;
 
         const lum = (r + g + b) / 3;
         const chroma = Math.max(r, g, b) - Math.min(r, g, b);
         const colorDist = Math.hypot(r - bgR, g - bgG, b - bgB);
 
         // Check if pixel is in the central lower chest region (white shirt / collar)
-        const isChestArea = (y > sampleH * 0.58 && x > sampleW * 0.30 && x < sampleW * 0.70);
-        const isShirt = isChestArea && (lum > 180);
+        const isChestArea = (y > sampleH * 0.58 && x > sampleW * 0.28 && x < sampleW * 0.72);
+        const isShirt = isChestArea && (lum > 175);
 
         // Check for human features: dark hair/suit/glasses or warm skin tones
         const isDark = lum < 112; // Hair, suit, glasses frames, pupils, beard
-        const isSkinTone = (r > g && g >= b && (r - b) >= 12 && lum > 75);
+        const isSkinTone = (r > g && g >= b && (r - b) >= 10 && lum > 65);
 
         // Background detection:
-        // Studio gray backdrop has low chroma and matches corner brightness/color
+        // Studio backdrop has low chroma and is NOT shirt / skin / dark hair
         let isBackground = false;
-        if (!isShirt && !isDark && !isSkinTone) {
-          if (chroma < 20 && (colorDist < 75 || (lum > 125 && lum < 210))) {
+        if (!isShirt && !isSkinTone && !isDark) {
+          // Any low-chroma pixel outside chest shirt is studio backdrop (gray or bright white highlight)
+          if (chroma < 25 && (lum > 120 || colorDist < 80)) {
             isBackground = true;
           }
         }
 
         if (isBackground) {
-          // Skip backdrop pixel so warm cream background shows through
+          // Skip backdrop pixel so warm background shows through
           continue;
         }
 
         // Brighten particle colors for dark maroon background:
-        // Apply gamma 0.8 plus a lift of +18 to each channel (clamped at 255) and boost contrast slightly.
-        // Do not darken light pixels.
         const brighten = (val: number) => {
-          const norm = val / 255;
+          if (!Number.isFinite(val)) return 0;
+          const norm = Math.max(0, Math.min(255, val)) / 255;
           const gamma = Math.pow(norm, 0.8) * 255;
           const lifted = gamma + 18;
           const contrast = (lifted - 128) * 1.05 + 128;
@@ -301,15 +304,14 @@ export class ParticleEngine {
     }
   }
 
-  /** Stream particles downwards as user scrolls past hero */
+  /** Stream particles downwards gently as user scrolls past hero */
   streamOnScroll(scrollOffset: number) {
     if (scrollOffset <= 0) return;
-    const factor = Math.min(scrollOffset / 400, 1.5);
+    const factor = Math.min(scrollOffset / 600, 0.4);
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
-      // Capped so many quick scroll events can never fling particles wildly
-      p.vy = Math.min(p.vy + factor * 0.4, 12);
-      p.vx = Math.max(-6, Math.min(6, p.vx + Math.sin(p.breathOffset + scrollOffset * 0.01) * factor * 0.2));
+      p.vy = Math.min(p.vy + factor * 0.1, 2);
+      p.vx = Math.max(-1.5, Math.min(1.5, p.vx + Math.sin(p.breathOffset + scrollOffset * 0.01) * factor * 0.05));
     }
   }
 
@@ -321,16 +323,17 @@ export class ParticleEngine {
     const newWidth = Math.round(rect.width * this.dpr);
     const newHeight = Math.round(rect.height * this.dpr);
 
-    const sizeChanged = this.canvas.width !== newWidth || this.canvas.height !== newHeight;
-    // Only touch the canvas size when it really changed (assigning it clears the canvas)
+    const sizeChanged = Math.abs(this.canvas.width - newWidth) > 10 || Math.abs(this.canvas.height - newHeight) > 10;
     if (sizeChanged) {
       this.canvas.width = newWidth;
       this.canvas.height = newHeight;
-    }
-    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+      this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
 
-    if (this.imageLoaded && (sizeChanged || this.particles.length === 0)) {
-      this.samplePixels();
+      if (this.imageLoaded) {
+        this.samplePixels();
+      }
+    } else {
+      this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     }
   }
 
@@ -444,63 +447,5 @@ export class ParticleEngine {
       if (this.holdRadius < 1) this.holdRadius = 0;
     }
   }
-
-  private draw() {
-    const ctx = this.ctx;
-    const w = this.canvas.width / this.dpr;
-    const h = this.canvas.height / this.dpr;
-
-    // Clear canvas to transparent so warm cream background and subtle noise show through
-    ctx.clearRect(0, 0, w, h);
-
-    // Normal blending
-    ctx.globalCompositeOperation = 'source-over';
-
-    // Draw particles
-    for (let i = 0; i < this.particles.length; i++) {
-      const p = this.particles[i];
-      ctx.fillStyle = `rgb(${p.r}, ${p.g}, ${p.b})`;
-      ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
-    }
-
-    // Draw photo reveal on hold
-    if (this.holdRadius > 1 && this.image) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(this.holdX, this.holdY, this.holdRadius, 0, Math.PI * 2);
-      ctx.closePath();
-      ctx.clip();
-
-      // Draw real sharp photo
-      ctx.drawImage(
-        this.image,
-        this.imgRenderX,
-        this.imgRenderY,
-        this.imgRenderW,
-        this.imgRenderH
-      );
-
-      // 1px --text border at 40% opacity on the circle edge
-      ctx.strokeStyle = 'rgba(244, 238, 227, 0.40)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      ctx.restore();
-    }
-
-    if (!this.hasDrawnFirstFrame && this.particles.length > 0) {
-      this.hasDrawnFirstFrame = true;
-      this.config.onFirstFrame?.();
-    }
-  }
-
-  destroy() {
-    this.destroyed = true;
-    if (ParticleEngine.active.get(this.canvas) === this) {
-      ParticleEngine.active.delete(this.canvas);
-    }
-    this.stop();
-    this.particles = [];
-    this.image = null;
-  }
+ 
 }

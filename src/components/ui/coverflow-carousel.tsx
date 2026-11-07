@@ -94,10 +94,12 @@ export function CoverflowCarousel({
   const dragRef = React.useRef<{
     id: number;
     x: number;
+    y: number;
     pos: number;
     v: number;
     t: number;
-    moved: number;
+    movedX: number;
+    movedY: number;
     downIndex: number | null;
   } | null>(null);
 
@@ -215,10 +217,12 @@ export function CoverflowCarousel({
     dragRef.current = {
       id: event.pointerId,
       x: event.clientX,
+      y: event.clientY,
       pos: posRef.current,
       v: 0,
       t: performance.now(),
-      moved: 0,
+      movedX: 0,
+      movedY: 0,
       downIndex: hit ? Number(hit.dataset.index) : null,
     };
   };
@@ -227,10 +231,11 @@ export function CoverflowCarousel({
     const drag = dragRef.current;
     if (!drag || drag.id !== event.pointerId) return;
 
+    drag.movedX = Math.max(drag.movedX, Math.abs(event.clientX - drag.x));
+    drag.movedY = Math.max(drag.movedY, Math.abs(event.clientY - drag.y));
+
     const pitch = widthRef.current * (1 + gap);
     if (!pitch) return;
-
-    drag.moved = Math.max(drag.moved, Math.abs(event.clientX - drag.x));
 
     const now = performance.now();
     const previous = posRef.current;
@@ -248,13 +253,24 @@ export function CoverflowCarousel({
     if (!drag || drag.id !== event.pointerId) return;
     dragRef.current = null;
 
-    if (drag.moved < 6 && drag.downIndex !== null) {
+    const isTouch =
+      typeof window !== "undefined" &&
+      (window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768);
+
+    // Any movement in X or Y greater than 8px indicates dragging or scrolling, NOT a tap
+    const totalMovement = Math.hypot(drag.movedX, drag.movedY);
+
+    if (totalMovement < 8 && drag.downIndex !== null) {
       const centre = indexAt(posRef.current);
       if (drag.downIndex === centre) {
         settle(clamp(Math.round(posRef.current)));
-        const slide = slides[centre];
-        if (slide?.repoUrl || slide?.appUrl || slide?.designUrl || slide?.liveUrl || slide?.href) {
-          onActivate?.(slide, centre);
+        // On touch devices, disable tapping the card directly to open links!
+        // Permanent action buttons below the card are used instead.
+        if (!isTouch) {
+          const slide = slides[centre];
+          if (slide?.repoUrl || slide?.appUrl || slide?.designUrl || slide?.liveUrl || slide?.href) {
+            onActivate?.(slide, centre);
+          }
         }
       } else {
         goTo(drag.downIndex);
@@ -530,30 +546,30 @@ export function CoverflowCarousel({
                     {active?.description || active?.subtitle}
                   </p>
 
-                  {/* Action buttons */}
+                  {/* Action buttons — permanently visible beneath description for flawless touch & desktop UX */}
                   <div className="mt-6 flex items-center gap-3 flex-wrap">
-                    {/* If repoUrl exists: show "View Repository" (GitHub icon) */}
+                    {/* If repoUrl exists: show "View Repo" (GitHub icon) */}
                     {Boolean(active?.repoUrl && active.repoUrl.trim() !== "") && (
                       <a
                         href={active.repoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 h-11 px-5 rounded-full text-xs font-medium text-white bg-[#FF5A1F] hover:bg-[#D9420A] transition-colors shadow-sm"
+                        className="inline-flex items-center gap-2 h-11 min-h-[44px] px-5 rounded-full text-xs font-medium text-white bg-[#FF5A1F] hover:bg-[#D9420A] transition-colors shadow-sm"
                       >
                         <Github className="size-4" />
-                        <span>View Repository</span>
+                        <span>View Repo</span>
                       </a>
                     )}
 
-                    {/* If appUrl exists: show "View App" (arrow-up-right icon) */}
+                    {/* If appUrl exists: show "Live App" (arrow-up-right icon) */}
                     {Boolean(active?.appUrl && active.appUrl.trim() !== "") && (
                       <a
                         href={active.appUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 h-11 px-5 rounded-full text-xs font-medium text-white bg-[#FF5A1F] hover:bg-[#D9420A] transition-colors shadow-sm"
+                        className="inline-flex items-center gap-2 h-11 min-h-[44px] px-5 rounded-full text-xs font-medium text-white bg-[#FF5A1F] hover:bg-[#D9420A] transition-colors shadow-sm"
                       >
-                        <span>View App</span>
+                        <span>Live App</span>
                         <ArrowUpRight className="size-4" />
                       </a>
                     )}
@@ -564,22 +580,22 @@ export function CoverflowCarousel({
                         href={active.designUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 h-11 px-5 rounded-full text-xs font-medium text-white bg-[#FF5A1F] hover:bg-[#D9420A] transition-colors shadow-sm"
+                        className="inline-flex items-center gap-2 h-11 min-h-[44px] px-5 rounded-full text-xs font-medium text-white bg-[#FF5A1F] hover:bg-[#D9420A] transition-colors shadow-sm"
                       >
                         <span>View Design</span>
                         <ArrowUpRight className="size-4" />
                       </a>
                     )}
 
-                    {/* If liveUrl exists: show "Visit Website" */}
+                    {/* If liveUrl exists: show "Live App" */}
                     {Boolean(active?.liveUrl && active.liveUrl.trim() !== "") && (
                       <a
                         href={active.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 h-11 px-5 rounded-full text-xs font-medium text-white bg-[#FF5A1F] hover:bg-[#D9420A] transition-colors shadow-sm"
+                        className="inline-flex items-center gap-2 h-11 min-h-[44px] px-5 rounded-full text-xs font-medium text-white bg-[#FF5A1F] hover:bg-[#D9420A] transition-colors shadow-sm"
                       >
-                        <span>Visit Website</span>
+                        <span>Live App</span>
                         <ArrowUpRight className="size-4" />
                       </a>
                     )}
@@ -595,7 +611,7 @@ export function CoverflowCarousel({
                             title: active.title,
                           })
                         }
-                        className="inline-flex items-center gap-2 h-11 px-5 rounded-full text-xs font-medium text-[var(--text)] border border-[rgba(244,238,227,0.28)] hover:bg-[var(--surface-strong)] transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-2 h-11 min-h-[44px] px-5 rounded-full text-xs font-medium text-[var(--text)] border border-[rgba(244,238,227,0.28)] hover:bg-[var(--surface-strong)] transition-colors cursor-pointer"
                       >
                         <Play className="size-3.5 fill-current" />
                         <span>Watch Demo</span>

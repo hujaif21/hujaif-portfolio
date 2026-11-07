@@ -397,94 +397,15 @@ html {
   background-color: #E64E17 !important;
   border-color: #E64E17 !important;
   color: #FFFFFF !important;
-}
+  }
 
-/* ---- Floating Navigation Bar ---- */
-.nav-bar {
-  position: fixed;
-  top: calc(1rem + env(safe-area-inset-top, 0px));
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.375rem 0.625rem;
-  background: rgba(20, 6, 10, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--line);
-  border-radius: 9999px;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
-  max-width: calc(100vw - 24px);
-  width: max-content;
-  overflow-x: auto;
+/* ---- Floating Navigation Bar Utilities ---- */
+.scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
 }
-
-.nav-bar::-webkit-scrollbar {
+.scrollbar-none::-webkit-scrollbar {
   display: none;
-}
-
-.nav-bar--hidden {
-  transform: translateX(-50%) translateY(-140%);
-  opacity: 0;
-}
-
-.nav-link {
-  position: relative;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  padding: 0.5rem 0.75rem;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  transition: color 0.2s ease;
-  cursor: pointer;
-  border: none;
-  background: none;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-@media (max-width: 639px) {
-  .nav-bar {
-    top: calc(0.75rem + env(safe-area-inset-top, 0px));
-    gap: 0.125rem;
-    padding: 0.25rem 0.375rem;
-    max-width: calc(100vw - 20px);
-  }
-  .nav-link {
-    font-size: 0.625rem;
-    letter-spacing: 0.03em;
-    padding: 0.35rem 0.5rem;
-    min-height: 38px;
-    flex-shrink: 0;
-  }
-}
-
-.nav-link:hover,
-.nav-link--active {
-  color: var(--text);
-}
-
-.nav-link--active::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background-color: var(--ember);
 }
 
 .nav-kbd {
