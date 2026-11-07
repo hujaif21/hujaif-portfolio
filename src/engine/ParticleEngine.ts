@@ -447,5 +447,63 @@ export class ParticleEngine {
       if (this.holdRadius < 1) this.holdRadius = 0;
     }
   }
- 
+
+  private draw() {
+    const ctx = this.ctx;
+    const w = this.canvas.width / this.dpr;
+    const h = this.canvas.height / this.dpr;
+
+    // Clear canvas to transparent so warm background and subtle noise show through
+    ctx.clearRect(0, 0, w, h);
+
+    // Normal blending
+    ctx.globalCompositeOperation = 'source-over';
+
+    // Draw particles
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
+      ctx.fillStyle = `rgb(${p.r}, ${p.g}, ${p.b})`;
+      ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+    }
+
+    // Draw photo reveal on hold
+    if (this.holdRadius > 1 && this.image) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(this.holdX, this.holdY, this.holdRadius, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+
+      // Draw real sharp photo
+      ctx.drawImage(
+        this.image,
+        this.imgRenderX,
+        this.imgRenderY,
+        this.imgRenderW,
+        this.imgRenderH
+      );
+
+      // 1px --text border at 40% opacity on the circle edge
+      ctx.strokeStyle = 'rgba(244, 238, 227, 0.40)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    if (!this.hasDrawnFirstFrame && this.particles.length > 0) {
+      this.hasDrawnFirstFrame = true;
+      this.config.onFirstFrame?.();
+    }
+  }
+
+  destroy() {
+    this.destroyed = true;
+    if (ParticleEngine.active.get(this.canvas) === this) {
+      ParticleEngine.active.delete(this.canvas);
+    }
+    this.stop();
+    this.particles = [];
+    this.image = null;
+  }
 }
